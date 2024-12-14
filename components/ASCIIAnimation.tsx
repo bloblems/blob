@@ -121,7 +121,14 @@ export default function ASCIIAnimation() {
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
 
-    const charWidth = 8.4;  // Approximate width of a monospace character
+    // Use a more precise method to calculate columns
+    const testSpan = document.createElement('span');
+    testSpan.style.font = getComputedStyle(canvas).font;
+    testSpan.textContent = 'X';
+    document.body.appendChild(testSpan);
+    const charWidth = testSpan.getBoundingClientRect().width;
+    document.body.removeChild(testSpan);
+
     const charHeight = 20;
 
     const cols = Math.floor(width / charWidth);
@@ -139,7 +146,14 @@ export default function ASCIIAnimation() {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    const charWidth = 8.4;  // Approximate width of a monospace character
+    // Use the same method as in setup to calculate charWidth
+    const testSpan = document.createElement('span');
+    testSpan.style.font = getComputedStyle(canvas).font;
+    testSpan.textContent = 'X';
+    document.body.appendChild(testSpan);
+    const charWidth = testSpan.getBoundingClientRect().width;
+    document.body.removeChild(testSpan);
+
     const charHeight = 20;
 
     const cols = Math.floor(width / charWidth);
@@ -169,7 +183,7 @@ export default function ASCIIAnimation() {
   return (
     <pre
       ref={canvasRef}
-      className="fixed inset-0 m-0 p-0 font-mono text-[14px] leading-[20px] overflow-hidden whitespace-pre text-[#616161] [text-shadow:0_0_8px_#f0f6f0] bg-[#222323]"
+      className="fixed inset-0 m-0 p-0 font-mono text-[14px] leading-[20px] overflow-hidden whitespace-pre text-[#616161] [text-shadow:0_0_8px_#f0f6f0] bg-[#222323] w-full"
     />
   );
 }
