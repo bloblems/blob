@@ -37,7 +37,7 @@ const AlphabetNavigation: React.FC = () => {
             <DropdownMenu key={letter}>
               <DropdownMenuTrigger
                 className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-sm sm:text-base ${
-                  hasProjects ? 'text-[#f0f6f0] hover:text-[#f0f6f0]/75' : 'text-[#f0f6f0]/25'
+                  hasProjects ? 'text-[#f0f6f0]/50 hover:text-[#f0f6f0]' : 'text-[#f0f6f0]/5'
                 } ${!hasProjects && 'cursor-default'}`}
                 disabled={!hasProjects}
               >
