@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 const characters = ".,-*:;!loea#ḂLOBLEMS";
 const NUM_PARTICLES = 300;
@@ -11,9 +11,9 @@ class Follower {
   acc_x: number;
   acc_y: number;
 
-  constructor(canvasWidth: number, canvasHeight: number) {
-    this.x = Math.floor(Math.random() * canvasWidth);
-    this.y = Math.floor(Math.random() * canvasHeight);
+  constructor() {
+    this.x = Math.floor(Math.random() * 100);
+    this.y = Math.floor(Math.random() * 100);
     this.acc_x = 0;
     this.acc_y = 0;
   }
@@ -73,73 +73,7 @@ export default function ASCIIAnimation() {
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: 0, y: 0 });
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const resizeObserver = new ResizeObserver(() => {
-      if (canvas) {
-        setup();
-      }
-    });
-
-    resizeObserver.observe(canvas);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const charWidth = 8.4;  // Approximate width of a monospace character
-      const charHeight = 20;
-      mouseRef.current = {
-        x: Math.floor((e.clientX - rect.left) / charWidth),
-        y: Math.floor((e.clientY - rect.top) / charHeight)
-      };
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('resize', setup);
-
-    setup();
-    animate();
-
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('resize', setup);
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, []);
-
-  const setup = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-
-    // Use a more precise method to calculate columns
-    const testSpan = document.createElement('span');
-    testSpan.style.font = getComputedStyle(canvas).font;
-    testSpan.textContent = 'X';
-    document.body.appendChild(testSpan);
-    const charWidth = testSpan.getBoundingClientRect().width;
-    document.body.removeChild(testSpan);
-
-    const charHeight = 20;
-
-    const cols = Math.floor(width / charWidth);
-    const rows = Math.floor(height / charHeight);
-
-    followersRef.current = Array.from({ length: NUM_PARTICLES }, () => new Follower(cols, rows));
-    particlesRef.current = [];
-    mouseRef.current = { x: Math.floor(cols / 2), y: Math.floor(rows / 2) };
-  };
-
-  const animate = () => {
+  const animate = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -178,7 +112,74 @@ export default function ASCIIAnimation() {
     canvas.textContent = ascii.map(row => row.join('')).join('\n');
 
     animationRef.current = requestAnimationFrame(animate);
-  };
+  }, []);
+
+  const setup = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    // Use a more precise method to calculate columns
+    const testSpan = document.createElement('span');
+    testSpan.style.font = getComputedStyle(canvas).font;
+    testSpan.textContent = 'X';
+    document.body.appendChild(testSpan);
+    const charWidth = testSpan.getBoundingClientRect().width;
+    document.body.removeChild(testSpan);
+
+    const charHeight = 20;
+
+    const cols = Math.floor(width / charWidth);
+    const rows = Math.floor(height / charHeight);
+
+    followersRef.current = Array.from({ length: NUM_PARTICLES }, () => new Follower());
+    particlesRef.current = [];
+    mouseRef.current = { x: Math.floor(cols / 2), y: Math.floor(rows / 2) };
+
+    animate();
+  }, [animate]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (canvas) {
+        setup();
+      }
+    });
+
+    resizeObserver.observe(canvas);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const charWidth = 8.4;  // Approximate width of a monospace character
+      const charHeight = 20;
+      mouseRef.current = {
+        x: Math.floor((e.clientX - rect.left) / charWidth),
+        y: Math.floor((e.clientY - rect.top) / charHeight)
+      };
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', setup);
+
+    setup();
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', setup);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [setup]);
 
   return (
     <pre
