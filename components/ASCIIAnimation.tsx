@@ -18,7 +18,7 @@ class Follower {
     this.acc_y = 0;
   }
 
-  update(mouseX: number, mouseY: number, canvasWidth: number, canvasHeight: number) {
+  update(mouseX: number, mouseY: number) {
     if (this.x < mouseX) {
       this.acc_x += 0.1;
     } else {
@@ -96,7 +96,7 @@ export default function ASCIIAnimation() {
     const ascii: string[][] = Array.from({ length: rows }, () => Array(cols).fill(' '));
 
     followersRef.current.forEach(follower => {
-      const newParticle = follower.update(mouseRef.current.x, mouseRef.current.y, cols, rows);
+      const newParticle = follower.update(mouseRef.current.x, mouseRef.current.y);
       particlesRef.current.push(newParticle);
       follower.draw(ascii);
     });
