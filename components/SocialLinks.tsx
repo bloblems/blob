@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function SocialLinks() {
   return (
-    <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-12 text-base leading-base font-normal">
+    <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-12 text-base leading-base font-mono">
       <a 
         href="https://github.com/bloblems" 
         target="_blank" 

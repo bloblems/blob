@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 
 const characters = ".,-*:;!loea#ḂLOBLEMS";
-const NUM_PARTICLES = 300;
+const NUM_PARTICLES = 200;
 
 class Follower {
   x: number;
@@ -184,7 +184,7 @@ export default function ASCIIAnimation() {
   return (
     <pre
       ref={canvasRef}
-      className="fixed inset-0 m-0 p-0 font-mono text-[14px] leading-[20px] overflow-hidden whitespace-pre text-[#616161] [text-shadow:0_0_8px_#f0f6f0] bg-[#222323] w-full"
+      className="fixed font-mono text-[14px] leading-[21px] overflow-hidden text-[#616161] [text-shadow:0_0_8px_#f0f6f0] bg-[#222323] w-full"
     />
   );
 }

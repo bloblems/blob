@@ -28,7 +28,7 @@ const AlphabetNavigation: React.FC = () => {
   };
 
   return (
-    <nav className="w-full px-2 py-2 sm:px-4 sm:py-4">
+    <nav className="w-full p-4">
       <div className="flex flex-wrap justify-center gap-1">
         {alphabet.map((letter) => {
           const letterProjects = getProjectsForLetter(letter);
@@ -36,7 +36,7 @@ const AlphabetNavigation: React.FC = () => {
           return (
             <DropdownMenu key={letter}>
               <DropdownMenuTrigger
-                className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-sm sm:text-base ${
+                className={`w-8 h-8 flex items-center justify-center text-base font-mono ${
                   hasProjects ? 'text-[#f0f6f0]/50 hover:text-[#f0f6f0]' : 'text-[#f0f6f0]/5'
                 } ${!hasProjects && 'cursor-default'}`}
                 disabled={!hasProjects}
@@ -44,7 +44,7 @@ const AlphabetNavigation: React.FC = () => {
                 {letter}
               </DropdownMenuTrigger>
               {hasProjects && (
-                <DropdownMenuContent className="bg-[#222323] border-[#f0f6f0]/10 p-0">
+                <DropdownMenuContent className="bg-[#222323] border-[#f0f6f0]/10">
                   {letterProjects.map((project) => (
                     <DropdownMenuItem key={project.name} className="text-[#f0f6f0] hover:bg-[#f0f6f0]/10 focus:text-[#f0f6f0]">
                       <a
