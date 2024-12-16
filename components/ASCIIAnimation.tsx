@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 
 const characters = ".,-*:;!loea#ḂLOBLEMS";
-const NUM_PARTICLES = 200;
+const NUM_PARTICLES = 300;
 
 class Follower {
   x: number;
@@ -80,15 +80,8 @@ export default function ASCIIAnimation() {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    // Use the same method as in setup to calculate charWidth
-    const testSpan = document.createElement('span');
-    testSpan.style.font = getComputedStyle(canvas).font;
-    testSpan.textContent = 'X';
-    document.body.appendChild(testSpan);
-    const charWidth = testSpan.getBoundingClientRect().width;
-    document.body.removeChild(testSpan);
-
-    const charHeight = 20;
+    const charWidth = parseFloat(canvas.dataset.charWidth || '8.4');
+    const charHeight = parseFloat(canvas.dataset.charHeight || '20');
 
     const cols = Math.floor(width / charWidth);
     const rows = Math.floor(height / charHeight);
@@ -124,18 +117,21 @@ export default function ASCIIAnimation() {
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
 
-    // Use a more precise method to calculate columns
+    // Calculate and store charWidth and charHeight
     const testSpan = document.createElement('span');
     testSpan.style.font = getComputedStyle(canvas).font;
     testSpan.textContent = 'X';
     document.body.appendChild(testSpan);
     const charWidth = testSpan.getBoundingClientRect().width;
+    const charHeight = testSpan.getBoundingClientRect().height;
     document.body.removeChild(testSpan);
-
-    const charHeight = 20;
 
     const cols = Math.floor(width / charWidth);
     const rows = Math.floor(height / charHeight);
+
+    // Store calculated values
+    canvas.dataset.charWidth = charWidth.toString();
+    canvas.dataset.charHeight = charHeight.toString();
 
     followersRef.current = Array.from({ length: NUM_PARTICLES }, () => new Follower());
     particlesRef.current = [];
@@ -158,11 +154,16 @@ export default function ASCIIAnimation() {
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
-      const charWidth = 8.4;  // Approximate width of a monospace character
-      const charHeight = 20;
+      const testSpan = document.createElement('span');
+      testSpan.style.font = getComputedStyle(canvas).font;
+      testSpan.textContent = 'X';
+      document.body.appendChild(testSpan);
+      const charWidth = testSpan.getBoundingClientRect().width;
+      document.body.removeChild(testSpan);
+
       mouseRef.current = {
         x: Math.floor((e.clientX - rect.left) / charWidth),
-        y: Math.floor((e.clientY - rect.top) / charHeight)
+        y: Math.floor((e.clientY - rect.top) / 20) // Assuming 20px line height
       };
     };
 
@@ -184,7 +185,7 @@ export default function ASCIIAnimation() {
   return (
     <pre
       ref={canvasRef}
-      className="fixed font-mono text-[14px] leading-[21px] overflow-hidden text-[#616161] [text-shadow:0_0_8px_#f0f6f0] bg-[#222323] w-full"
+      className="fixed inset-0 m-0 p-0 font-mono text-[14px] leading-[20px] overflow-hidden whitespace-pre text-[#616161] [text-shadow:0_0_8px_#f0f6f0] bg-[#222323] w-full"
     />
   );
 }
